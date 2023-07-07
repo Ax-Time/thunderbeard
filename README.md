@@ -61,4 +61,5 @@ X = jnp.array(np.random.randn(batch_size, 10))
 t = jnp.array(np.random.randn(batch_size, 6))
 
 calculated_loss = loss(X, t, nn_weights)
+calculated_gradients = grad(X, t, nn_weights)
 ~~~
