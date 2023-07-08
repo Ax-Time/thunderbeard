@@ -3,6 +3,8 @@ import jax.numpy as jnp
 import numpy as np
 import jax
 
+from thunderbeard.optimizers import Optimizer
+
 class Module(abc.ABC):
     """
         It is a base class for all modules. Custom module may be created by inheriting from this class.
@@ -100,6 +102,15 @@ class Module(abc.ABC):
         """
         return jnp.sum(jnp.array([weight.size for weight in self.get_weights()]))
     
+    def fit(self, X: jnp.ndarray, t: jnp.ndarray, optimizer: Optimizer, epochs: int, batch_size: int):
+        """
+            Fits the module to the given data using the given optimizer.
+        """
+        for epoch in range(epochs):
+            for i in range(0, X.shape[0], batch_size):
+                optimizer.update(self.get_weights(), X[i:i+batch_size], t[i:i+batch_size])
+            print(f"Epoch {epoch+1} loss: {optimizer.loss(self.get_weights(), X, t)}")
+
 class FullyConnectedLayer(Module):
     """
         A fully connected layer with given number of inputs, outputs and activation function.
